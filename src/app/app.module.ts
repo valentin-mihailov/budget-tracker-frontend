@@ -6,10 +6,12 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './Components/login/login.component';
 import { RegisterComponent } from './Components/register/register.component';
 import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+import { DashboardComponent } from './Components/dashboard/dashboard.component';
 
 @NgModule({
-  declarations: [AppComponent, LoginComponent, RegisterComponent],
-  imports: [BrowserModule, AppRoutingModule, FormsModule],
+  declarations: [AppComponent, LoginComponent, RegisterComponent, DashboardComponent],
+  imports: [BrowserModule, AppRoutingModule, FormsModule, HttpClientModule],
   providers: [],
   bootstrap: [AppComponent],
 })

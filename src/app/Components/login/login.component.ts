@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import { LoginPayload } from 'src/app/Models/auth.interface';
+import { AuthService } from 'src/app/Services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -6,12 +9,24 @@ import { Component } from '@angular/core';
   styleUrls: ['./login.component.css'],
 })
 export class LoginComponent {
-  loginData: { email: string; password: string } = {
+  loginData: LoginPayload = {
     email: ``,
     password: ``,
   };
 
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+  ) {}
+
   login(): void {
-    console.log(this.loginData);
+    this.authService.login(this.loginData).subscribe({
+      next: (response) => {
+        this.router.navigate([`/dashboard`]);
+      },
+      error: (error) => {
+        console.error(`Login Failed!` + error);
+      },
+    });
   }
 }

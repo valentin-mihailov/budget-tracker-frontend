@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { RegisterPayload } from 'src/app/Models/auth.interface';
+import { AuthService } from 'src/app/Services/auth.service';
 
 @Component({
   selector: 'app-register',
@@ -6,13 +8,22 @@ import { Component } from '@angular/core';
   styleUrls: ['./register.component.css'],
 })
 export class RegisterComponent {
-  registerData: { email: string; password: string; confirmPassword: string } = {
+  registerData: RegisterPayload = {
     email: ``,
     password: ``,
     confirmPassword: ``,
   };
 
+  constructor(private authService: AuthService) {}
+
   register(): void {
-    console.log(this.registerData);
+    this.authService.register(this.registerData).subscribe({
+      next: (response) => {
+        console.log(`Register Success!`);
+      },
+      error: (error) => {
+        console.error(`Register Failed!`);
+      },
+    });
   }
 }
