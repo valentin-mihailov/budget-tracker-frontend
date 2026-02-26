@@ -12,7 +12,10 @@
     </div>
   </div>
 
-  <app-transaction-list [transactions]="transactions"></app-transaction-list>
+  <app-transaction-list
+    [transactions]="transactions"
+    (delete)="onTransactionDeleted($event)"
+  ></app-transaction-list>
 
   <button
     (click)="isModalOpen = true"

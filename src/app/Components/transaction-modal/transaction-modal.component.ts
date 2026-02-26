@@ -1,6 +1,7 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Transactions } from 'src/app/Models/transactions.interface';
+import { MessageService } from 'src/app/Services/message.service';
 
 @Component({
   standalone: true,
@@ -14,6 +15,10 @@ export class TransactionModalComponent {
   @Output() close = new EventEmitter<void>();
   @Output() add = new EventEmitter<any>();
 
+  constructor(private messageService: MessageService) {}
+
+  msg$ = this.messageService.msg$;
+
   handleTransaction(
     description: string,
     amount: string,
@@ -22,7 +27,9 @@ export class TransactionModalComponent {
     const numAmount = parseFloat(amount);
 
     if (!description.trim() || isNaN(numAmount) || numAmount <= 0) {
-      alert('Please enter a valid description and amount.');
+      this.messageService.setMessage(
+        'Please enter a valid description and amount.',
+      );
       return;
     }
 
@@ -36,6 +43,7 @@ export class TransactionModalComponent {
       }),
     };
 
+    this.messageService.clearMessage();
     this.add.emit(newEntry);
     this.close.emit();
   }

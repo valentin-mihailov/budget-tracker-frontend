@@ -28,7 +28,12 @@
         </svg>
       </button>
     </div>
-
+    <div
+      *ngIf="msg$ | async as currentMsg"
+      class="mb-4 p-3 bg-red-50 border-l-4 border-red-500 text-red-700 text-sm font-bold animate-shake"
+    >
+      {{ currentMsg }}
+    </div>
     <div class="space-y-5">
       <div>
         <label

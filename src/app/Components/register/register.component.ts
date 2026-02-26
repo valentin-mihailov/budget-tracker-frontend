@@ -3,6 +3,7 @@ import { RegisterPayload } from 'src/app/Models/auth.interface';
 import { AuthService } from 'src/app/Services/auth.service';
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
+import { MessageService } from 'src/app/Services/message.service';
 
 @Component({
   selector: 'app-register',
@@ -12,6 +13,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 export class RegisterComponent {
   constructor(
     private authService: AuthService,
+    private messageService: MessageService,
     private router: Router,
   ) {}
 
@@ -21,19 +23,21 @@ export class RegisterComponent {
     confirmPassword: ``,
   };
 
-  errorMessage: string = ``;
+  msg$ = this.messageService.msg$;
 
   register(): void {
+    this.messageService.clearMessage();
+
     const validationError = this.authService.validateRegistration(
       this.registerData,
     );
 
     if (validationError) {
-      this.errorMessage = validationError;
+      this.messageService.setMessage(validationError);
       return;
     }
 
-    this.errorMessage = '';
+    this.messageService.clearMessage();
 
     this.authService.register(this.registerData).subscribe({
       next: (response) => {
@@ -41,12 +45,12 @@ export class RegisterComponent {
       },
       error: (error: HttpErrorResponse) => {
         if (error.status === 409) {
-          this.errorMessage = 'This email is already registered.';
+          this.messageService.setMessage('This email is already registered.');
         } else {
-          this.errorMessage = 'An unexpected error occurred. Please try again.';
+          this.messageService.setMessage(
+            'An unexpected error occurred. Please try again.',
+          );
         }
-
-        console.error('Registration failed!', error);
       },
     });
   }

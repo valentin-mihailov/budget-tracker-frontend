@@ -1,27 +1,17 @@
-<div class="space-y-3">
-  <h2 class="text-sm font-bold text-gray-400 uppercase tracking-wider px-1">
-    Recent Activity
-  </h2>
-
-  <div
-    *ngIf="transactions.length === 0"
-    class="text-center py-10 text-gray-400"
-  >
-    <p>No transactions yet. Tap + to start!</p>
+<div
+  *ngFor="let item of transactions; let i = index"
+  class="flex justify-between items-center bg-white p-4 rounded-xl border border-gray-50 shadow-sm"
+  [class.bg-green-100]="item.type === 'income'"
+  [class.bg-red-100]="item.type === 'expense'"
+>
+  <div class="flex items-center space-x-3">
+    <div>
+      <p class="font-bold text-gray-800">{{ item.description }}</p>
+      <p class="text-[10px] text-gray-400 font-medium">{{ item.date }}</p>
+    </div>
   </div>
 
-  <div
-    *ngFor="let item of transactions"
-    class="flex justify-between items-center bg-white p-4 rounded-xl border border-gray-50 shadow-sm"
-    [class.bg-green-100]="item.type === 'income'"
-    [class.bg-red-100]="item.type === 'expense'"
-  >
-    <div class="flex items-center space-x-3">
-      <div>
-        <p class="font-bold text-gray-800">{{ item.description }}</p>
-        <p class="text-[10px] text-gray-400 font-medium">{{ item.date }}</p>
-      </div>
-    </div>
+  <div class="flex items-center space-x-4">
     <span
       [class.text-green-600]="item.type === 'income'"
       [class.text-red-600]="item.type === 'expense'"
@@ -29,5 +19,25 @@
     >
       {{ item.type === "income" ? "+" : "-" }}${{ item.amount }}
     </span>
+
+    <button
+      (click)="onDeleteClick(i)"
+      class="p-2 text-black hover:text-red-500 hover:bg-red-50 rounded-full transition-colors cursor-pointer"
+      title="Delete Transaction"
+    >
+      <svg
+        class="w-5 h-5"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+        />
+      </svg>
+    </button>
   </div>
 </div>

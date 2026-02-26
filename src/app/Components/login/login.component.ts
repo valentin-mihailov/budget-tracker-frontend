@@ -3,6 +3,7 @@ import { LoginPayload } from 'src/app/Models/auth.interface';
 import { AuthService } from 'src/app/Services/auth.service';
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
+import { MessageService } from 'src/app/Services/message.service';
 
 @Component({
   selector: 'app-login',
@@ -12,6 +13,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 export class LoginComponent {
   constructor(
     private authService: AuthService,
+    private messageService: MessageService,
     private router: Router,
   ) {}
 
@@ -20,9 +22,11 @@ export class LoginComponent {
     password: ``,
   };
 
-  errorMessage: string = ``;
+  msg$ = this.messageService.msg$;
 
   login(): void {
+    this.messageService.clearMessage();
+
     this.authService.login(this.loginData).subscribe({
       next: (response: any) => {
         console.log(response.access_token);
@@ -32,11 +36,13 @@ export class LoginComponent {
         const statusCode = error.status;
 
         if (statusCode === 401) {
-          this.errorMessage = 'Incorrect email or password!';
+          this.messageService.setMessage('Incorrect email or password!');
         } else if (statusCode === 500) {
-          this.errorMessage = 'Internal server error!';
+          this.messageService.setMessage('Internal server error!');
         } else {
-          this.errorMessage = 'An unexpected error occurred. Please try again.';
+          this.messageService.setMessage(
+            'An unexpected error occurred. Please try again.',
+          );
         }
       },
     });

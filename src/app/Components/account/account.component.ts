@@ -15,18 +15,23 @@ import { TransactionsService } from 'src/app/Services/transactions.service';
 export class AccountComponent implements OnInit {
   constructor(private transactionService: TransactionsService) {}
 
-  totalCash: number = 0;
   isModalOpen: boolean = false;
   transactions: Transactions[] = [];
+  totalCash: number = 0;
 
   ngOnInit(): void {
     this.transactions = this.transactionService.getTransactions();
-    this.totalCash = this.transactionService.calculateBalance();
+    this.totalCash = this.transactionService.getTotalCash();
   }
 
   onTransactionAdded(newTransaction: any) {
     this.transactionService.addTransaction(newTransaction);
     this.totalCash = this.transactionService.calculateBalance();
     this.isModalOpen = false;
+  }
+
+  onTransactionDeleted(index: number) {
+    this.transactionService.deleteTransaction(index);
+    this.totalCash = this.transactionService.calculateBalance();
   }
 }

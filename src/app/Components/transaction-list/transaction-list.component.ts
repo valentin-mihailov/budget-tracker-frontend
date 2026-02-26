@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Transactions } from 'src/app/Models/transactions.interface';
 
 @Component({
@@ -11,4 +11,9 @@ import { Transactions } from 'src/app/Models/transactions.interface';
 })
 export class TransactionListComponent {
   @Input() transactions: Transactions[] = [];
+  @Output() delete = new EventEmitter<number>();
+
+  onDeleteClick(index: number) {
+    this.delete.emit(index);
+  }
 }

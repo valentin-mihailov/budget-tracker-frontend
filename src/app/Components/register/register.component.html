@@ -4,7 +4,7 @@
   <h1 class="text-3xl font-bold text-gray-800">Create Account</h1>
 
   <div
-    *ngIf="errorMessage"
+    *ngIf="msg$ | async as currentMsg"
     class="w-full max-w-xs flex items-center p-4 mb-4 text-red-800 border-l-4 border-red-500 bg-red-50 animate-shake shadow-md"
     role="alert"
   >
@@ -17,7 +17,7 @@
     </svg>
 
     <div class="ml-3 text-sm font-bold">
-      {{ errorMessage }}
+      {{ currentMsg }}
     </div>
   </div>
 

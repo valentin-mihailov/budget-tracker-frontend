@@ -7,7 +7,12 @@ import { Transactions } from '../Models/transactions.interface';
 export class TransactionsService {
   constructor() {}
 
+  private totalCash = 0;
   private transactions: Transactions[] = [];
+
+  getTotalCash(): number {
+    return this.totalCash;
+  }
 
   getTransactions(): Transactions[] {
     return this.transactions;
@@ -15,6 +20,10 @@ export class TransactionsService {
 
   addTransaction(item: any) {
     this.transactions.unshift(item);
+  }
+
+  deleteTransaction(index: number) {
+    this.transactions.splice(index, 1);
   }
 
   calculateBalance() {
