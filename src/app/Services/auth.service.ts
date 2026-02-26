@@ -17,4 +17,19 @@ export class AuthService {
   register(credentials: RegisterPayload) {
     return this.http.post(`${this.API_URL}/register`, credentials);
   }
+
+  validateRegistration(credentials: RegisterPayload): string {
+    if (
+      !credentials.email ||
+      !credentials.password ||
+      !credentials.confirmPassword
+    ) {
+      return 'There is an empty field.';
+    }
+
+    if (credentials.password !== credentials.confirmPassword) {
+      return "Passwords don't match!";
+    }
+    return ``;
+  }
 }

@@ -1,0 +1,33 @@
+<div class="space-y-3">
+  <h2 class="text-sm font-bold text-gray-400 uppercase tracking-wider px-1">
+    Recent Activity
+  </h2>
+
+  <div
+    *ngIf="transactions.length === 0"
+    class="text-center py-10 text-gray-400"
+  >
+    <p>No transactions yet. Tap + to start!</p>
+  </div>
+
+  <div
+    *ngFor="let item of transactions"
+    class="flex justify-between items-center bg-white p-4 rounded-xl border border-gray-50 shadow-sm"
+    [class.bg-green-100]="item.type === 'income'"
+    [class.bg-red-100]="item.type === 'expense'"
+  >
+    <div class="flex items-center space-x-3">
+      <div>
+        <p class="font-bold text-gray-800">{{ item.description }}</p>
+        <p class="text-[10px] text-gray-400 font-medium">{{ item.date }}</p>
+      </div>
+    </div>
+    <span
+      [class.text-green-600]="item.type === 'income'"
+      [class.text-red-600]="item.type === 'expense'"
+      class="font-black"
+    >
+      {{ item.type === "income" ? "+" : "-" }}${{ item.amount }}
+    </span>
+  </div>
+</div>

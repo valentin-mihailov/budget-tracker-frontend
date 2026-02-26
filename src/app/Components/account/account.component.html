@@ -1,0 +1,63 @@
+<div class="p-4 pb-24 max-w-2xl mx-auto animate-fade-in">
+  <div
+    class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-6 mt-4"
+  >
+    <p class="text-xs text-gray-400 uppercase tracking-widest font-bold mb-1">
+      Total Balance
+    </p>
+    <div class="flex items-baseline space-x-1">
+      <span class="text-[1.75rem] font-black text-gray-900"
+        >${{ totalCash }}</span
+      >
+    </div>
+  </div>
+
+  <app-transaction-list [transactions]="transactions"></app-transaction-list>
+
+  <button
+    (click)="isModalOpen = true"
+    class="fixed bottom-8 right-6 w-14 h-14 bg-blue-600 text-white rounded-full shadow-xl hover:bg-blue-700 hover:scale-110 active:scale-95 transition-all flex items-center justify-center z-50"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="h-8 w-8"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="3"
+        d="M12 4v16m8-8H4"
+      />
+    </svg>
+  </button>
+</div>
+
+<button
+  (click)="isModalOpen = true"
+  class="fixed bottom-8 right-6 w-14 h-14 bg-blue-600 text-white rounded-full shadow-xl hover:bg-blue-700 hover:scale-110 active:scale-95 transition-all flex items-center justify-center z-50"
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    class="h-8 w-8"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="3"
+      d="M12 4v16m8-8H4"
+    />
+  </svg>
+</button>
+
+<app-transaction-modal
+  [isOpen]="isModalOpen"
+  (close)="isModalOpen = false"
+  (add)="onTransactionAdded($event)"
+  >></app-transaction-modal
+>

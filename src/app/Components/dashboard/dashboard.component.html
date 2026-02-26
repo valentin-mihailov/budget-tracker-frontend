@@ -1,1 +1,29 @@
-<p>dashboard works!</p>
+<div class="min-h-screen bg-gray-50 flex flex-col">
+  <nav
+    class="fixed top-0 left-0 w-full h-16 bg-white border-b border-gray-200 z-50 shadow-sm"
+  >
+    <div class="flex h-full w-full max-w-4xl mx-auto">
+      <a
+        routerLink="account"
+        routerLinkActive="text-blue-600 border-b-2 border-blue-600 bg-blue-50/50"
+        class="flex-1 flex items-center justify-center text-gray-600 font-medium transition-all hover:bg-gray-50"
+      >
+        <span>Account</span>
+      </a>
+
+      <a
+        routerLink="budget"
+        routerLinkActive="text-blue-600 border-b-2 border-blue-600 bg-blue-50/50"
+        class="flex-1 flex items-center justify-center text-gray-600 font-medium transition-all hover:bg-gray-50"
+      >
+        <span>Budget</span>
+      </a>
+    </div>
+  </nav>
+
+  <main class="flex-grow pt-16 p-4">
+    <div class="max-w-4xl mx-auto">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+</div>
