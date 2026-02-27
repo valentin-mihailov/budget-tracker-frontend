@@ -16,6 +16,9 @@ export class TransactionsService {
   private balanceSubject = new BehaviorSubject<number>(0);
   balance$ = this.balanceSubject.asObservable();
 
+  private budgetSubject = new BehaviorSubject<number>(0);
+  budget$ = this.budgetSubject.asObservable();
+
   private get currentTransactions(): Transactions[] {
     return this.transactionsSubject.value;
   }
@@ -75,6 +78,30 @@ export class TransactionsService {
           this.refreshBalance(userId!);
         }),
       );
+  }
+
+  setBudget(newAmount: number) {
+    const userId = localStorage.getItem('user_id');
+
+    return this.http
+      .put(`${environment.API_URL}/users/${userId}/budget`, {
+        amount: Number(newAmount),
+      })
+      .pipe(
+        tap(() => {
+          this.budgetSubject.next(Number(newAmount));
+        }),
+      );
+  }
+
+  getBudget() {
+    const userId = localStorage.getItem('user_id');
+    this.http
+      .get<number>(`${environment.API_URL}/users/${userId}/budget`)
+      .subscribe({
+        next: (val) => this.budgetSubject.next(Number(val)),
+        error: (err) => console.error('Could not load budget', err),
+      });
   }
 
   getTotalIncome(): number {

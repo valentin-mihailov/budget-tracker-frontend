@@ -17,7 +17,22 @@ export class BudgetComponent implements OnInit, AfterViewInit {
   totalIncome: number = 0;
   totalExpenses: number = 0;
 
+  monthlyBudget: number = 0;
+  isEditingBudget: boolean = false;
+  tempBudget: number = 0;
+
   ngOnInit(): void {
+    this.transactionsService.getBudget();
+
+    this.transactionsService.getTransactions().subscribe({
+      error: (err) => console.error('Could not load transactions', err),
+    });
+
+    this.transactionsService.budget$.subscribe((val) => {
+      this.monthlyBudget = val;
+      this.tempBudget = val;
+    });
+
     this.transactionsService.transactions$.subscribe(() => {
       this.totalIncome = this.transactionsService.getTotalIncome();
       this.totalExpenses = this.transactionsService.getTotalExpenses();
@@ -58,5 +73,20 @@ export class BudgetComponent implements OnInit, AfterViewInit {
 
     this.incomeChart.update();
     this.expenseChart.update();
+  }
+
+  toggleEdit() {
+    this.isEditingBudget = !this.isEditingBudget;
+  }
+
+  saveBudget() {
+    this.transactionsService.setBudget(this.tempBudget).subscribe({
+      next: () => {
+        this.isEditingBudget = false;
+      },
+      error: (err) => {
+        console.error('Database update failed:', err);
+      },
+    });
   }
 }

@@ -1,38 +1,189 @@
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6">
-  <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-    <h3 class="text-gray-500 text-sm font-bold uppercase tracking-wider">
-      Total Incomes
-    </h3>
-    <p class="text-3xl font-black text-green-600 mb-4">
-      {{ totalIncome | currency }}
-    </p>
+<div class="min-h-screen bg-gray-50/50 pb-10">
+  <div class="px-6 pt-6">
+    <div
+      class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-6"
+    >
+      <div class="space-y-1">
+        <h3
+          class="text-gray-500 text-[10px] font-bold uppercase tracking-widest ml-1"
+        >
+          Monthly Budget
+        </h3>
 
-    <div class="relative h-64">
-      <canvas id="incomeChart"></canvas>
+        <div *ngIf="!isEditingBudget" class="flex items-center space-x-4">
+          <p class="text-3xl font-black text-gray-800">
+            {{
+              monthlyBudget > 0 ? (monthlyBudget | currency) : "No budget set"
+            }}
+          </p>
+          <button
+            (click)="toggleEdit()"
+            class="group flex items-center text-blue-600 hover:text-blue-800 text-sm font-bold transition-colors"
+          >
+            <svg
+              class="w-4 h-4 mr-1 group-hover:scale-110 transition-transform"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+              />
+            </svg>
+            {{ monthlyBudget > 0 ? "Edit" : "Set Budget" }}
+          </button>
+        </div>
+
+        <div
+          *ngIf="isEditingBudget"
+          class="flex items-center space-x-2 animate-fade-in"
+        >
+          <input
+            type="number"
+            [(ngModel)]="tempBudget"
+            class="px-4 py-2 border-2 border-blue-100 rounded-xl outline-none focus:border-blue-500 text-xl font-bold w-44 transition-all"
+            placeholder="0.00"
+          />
+          <button
+            (click)="saveBudget()"
+            class="bg-blue-600 text-white px-5 py-2.5 rounded-xl font-bold hover:bg-blue-700 active:scale-95 transition-all"
+          >
+            Save
+          </button>
+          <button
+            (click)="toggleEdit()"
+            class="text-gray-400 hover:text-gray-600 font-bold text-sm px-2"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+
       <div
-        *ngIf="totalIncome === 0"
-        class="absolute inset-0 flex items-center justify-center bg-gray-50/50"
+        *ngIf="monthlyBudget > 0"
+        class="flex-1 max-w-md w-full bg-gray-50 p-4 rounded-xl border border-gray-100"
       >
-        <span class="text-gray-400 text-sm italic">No income data yet</span>
+        <div
+          class="flex justify-between text-[10px] mb-2 font-black uppercase tracking-tighter"
+        >
+          <span class="text-gray-400">Spending Progress</span>
+          <span
+            [class.text-red-500]="totalExpenses > monthlyBudget"
+            class="text-gray-600"
+          >
+            {{ totalExpenses / monthlyBudget | percent: "1.0-1" }} of limit
+          </span>
+        </div>
+        <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+          <div
+            class="h-full rounded-full transition-all duration-700 ease-out"
+            [class.bg-green-500]="totalExpenses / monthlyBudget < 0.7"
+            [class.bg-yellow-500]="
+              totalExpenses / monthlyBudget >= 0.7 &&
+              totalExpenses / monthlyBudget <= 1
+            "
+            [class.bg-red-500]="totalExpenses / monthlyBudget > 1"
+            [style.width.%]="
+              (totalExpenses / monthlyBudget) * 100 > 100
+                ? 100
+                : (totalExpenses / monthlyBudget) * 100
+            "
+          ></div>
+        </div>
+        <p
+          *ngIf="totalExpenses > monthlyBudget"
+          class="text-[10px] text-red-500 font-bold mt-2 animate-pulse"
+        >
+          ⚠️ You have exceeded your monthly budget by
+          {{ totalExpenses - monthlyBudget | currency }}
+        </p>
       </div>
     </div>
   </div>
 
-  <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-    <h3 class="text-gray-500 text-sm font-bold uppercase tracking-wider">
-      Total Expenses
-    </h3>
-    <p class="text-3xl font-black text-red-600 mb-4">
-      -{{ totalExpenses | currency }}
-    </p>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6">
+    <div
+      class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col"
+    >
+      <div class="mb-6">
+        <h3
+          class="text-gray-400 text-[10px] font-bold uppercase tracking-widest ml-1"
+        >
+          Total Incomes
+        </h3>
+        <p class="text-4xl font-black text-green-600 mt-1">
+          {{ totalIncome | currency }}
+        </p>
+      </div>
 
-    <div class="relative h-64">
-      <canvas id="expenseChart"></canvas>
-      <div
-        *ngIf="totalExpenses === 0"
-        class="absolute inset-0 flex items-center justify-center bg-gray-50/50"
-      >
-        <span class="text-gray-400 text-sm italic">No expense data yet</span>
+      <div class="relative flex-1 min-h-[300px]">
+        <canvas id="incomeChart"></canvas>
+
+        <div
+          *ngIf="totalIncome === 0"
+          class="absolute inset-0 flex flex-col items-center justify-center bg-gray-50/80 rounded-xl border-2 border-dashed border-gray-200"
+        >
+          <svg
+            class="w-12 h-12 text-gray-300 mb-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1.5"
+              d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+            />
+          </svg>
+          <span class="text-gray-400 text-sm font-medium italic"
+            >No income data available</span
+          >
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col"
+    >
+      <div class="mb-6">
+        <h3
+          class="text-gray-400 text-[10px] font-bold uppercase tracking-widest ml-1"
+        >
+          Total Expenses
+        </h3>
+        <p class="text-4xl font-black text-red-600 mt-1">
+          -{{ totalExpenses | currency }}
+        </p>
+      </div>
+
+      <div class="relative flex-1 min-h-[300px]">
+        <canvas id="expenseChart"></canvas>
+
+        <div
+          *ngIf="totalExpenses === 0"
+          class="absolute inset-0 flex flex-col items-center justify-center bg-gray-50/80 rounded-xl border-2 border-dashed border-gray-200"
+        >
+          <svg
+            class="w-12 h-12 text-gray-300 mb-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1.5"
+              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          <span class="text-gray-400 text-sm font-medium italic"
+            >No expense data available</span
+          >
+        </div>
       </div>
     </div>
   </div>
