@@ -1,1 +1,39 @@
-<p>budget works!</p>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6">
+  <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+    <h3 class="text-gray-500 text-sm font-bold uppercase tracking-wider">
+      Total Incomes
+    </h3>
+    <p class="text-3xl font-black text-green-600 mb-4">
+      {{ totalIncome | currency }}
+    </p>
+
+    <div class="relative h-64">
+      <canvas id="incomeChart"></canvas>
+      <div
+        *ngIf="totalIncome === 0"
+        class="absolute inset-0 flex items-center justify-center bg-gray-50/50"
+      >
+        <span class="text-gray-400 text-sm italic">No income data yet</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+    <h3 class="text-gray-500 text-sm font-bold uppercase tracking-wider">
+      Total Expenses
+    </h3>
+    <p class="text-3xl font-black text-red-600 mb-4">
+      -{{ totalExpenses | currency }}
+    </p>
+
+    <div class="relative h-64">
+      <canvas id="expenseChart"></canvas>
+      <div
+        *ngIf="totalExpenses === 0"
+        class="absolute inset-0 flex items-center justify-center bg-gray-50/50"
+      >
+        <span class="text-gray-400 text-sm italic">No expense data yet</span>
+      </div>
+    </div>
+  </div>
+</div>

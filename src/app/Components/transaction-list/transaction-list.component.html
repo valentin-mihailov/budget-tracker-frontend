@@ -22,7 +22,7 @@
       [class.text-red-600]="item.type === 'expense'"
       class="font-black text-lg"
     >
-      {{ item.type === "income" ? "+" : "-" }}${{ item.amount.toFixed(2) }}
+      {{ item.type === "income" ? "+" : "-" }}{{ item.amount | currency }}
     </span>
 
     <button

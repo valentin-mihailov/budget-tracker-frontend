@@ -15,16 +15,12 @@ import { TransactionsService } from 'src/app/Services/transactions.service';
 export class AccountComponent implements OnInit {
   constructor(private transactionService: TransactionsService) {}
 
+  transactions$ = this.transactionService.transactions$;
   isModalOpen: boolean = false;
-  transactions: Transactions[] = [];
   totalCash$ = this.transactionService.balance$;
 
   ngOnInit(): void {
-    this.transactionService.getTransactions().subscribe({
-      next: (all) => (this.transactions = all),
-      error: (err) => console.error('Error fetching transactions', err),
-    });
-
+    this.transactionService.getTransactions().subscribe();
     this.transactionService.refreshBalance(localStorage.getItem(`user_id`)!);
   }
 

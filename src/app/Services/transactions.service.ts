@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Transactions } from '../Models/transactions.interface';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment.development';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 
@@ -10,9 +10,15 @@ import { BehaviorSubject, Observable, tap } from 'rxjs';
 export class TransactionsService {
   constructor(private http: HttpClient) {}
 
+  private transactionsSubject = new BehaviorSubject<Transactions[]>([]);
+  transactions$ = this.transactionsSubject.asObservable();
+
   private balanceSubject = new BehaviorSubject<number>(0);
-  private transactions: Transactions[] = [];
   balance$ = this.balanceSubject.asObservable();
+
+  private get currentTransactions(): Transactions[] {
+    return this.transactionsSubject.value;
+  }
 
   refreshBalance(userId: string) {
     this.http
@@ -23,12 +29,17 @@ export class TransactionsService {
   }
 
   getTransactions(): Observable<Transactions[]> {
-    const userId = localStorage.getItem(`user_id`);
+    const userId = localStorage.getItem('user_id');
     return this.http
       .get<
         Transactions[]
       >(`${environment.API_URL}/users/${userId}/transactions`)
-      .pipe(tap((all) => (this.transactions = all)));
+      .pipe(
+        tap((all) => {
+          const cleaned = all.map((t) => ({ ...t, amount: Number(t.amount) }));
+          this.transactionsSubject.next(cleaned);
+        }),
+      );
   }
 
   addTransaction(newTransaction: Transactions): Observable<any> {
@@ -40,41 +51,66 @@ export class TransactionsService {
       )
       .pipe(
         tap((savedItem: any) => {
-          this.transactions.unshift(savedItem);
+          savedItem.amount = Number(savedItem.amount);
+
+          const updated = [savedItem, ...this.transactionsSubject.value];
+          this.transactionsSubject.next(updated);
           this.refreshBalance(userId!);
         }),
       );
   }
 
   deleteTransaction(transactionId: string): Observable<any> {
-    const userId = localStorage.getItem(`user_id`);
+    const userId = localStorage.getItem('user_id');
     return this.http
       .delete(
         `${environment.API_URL}/users/${userId}/transactions/${transactionId}`,
       )
       .pipe(
         tap(() => {
-          const index = this.transactions.findIndex(
-            (t) => t.id === transactionId,
+          const updated = this.currentTransactions.filter(
+            (t) => t.id !== transactionId,
           );
-          if (index !== -1) this.transactions.splice(index, 1);
+          this.transactionsSubject.next(updated);
           this.refreshBalance(userId!);
         }),
       );
   }
 
-  calculateBalance() {
-    return this.transactions.reduce(
-      (acc, curr) =>
-        curr.type === 'income' ? acc + curr.amount : acc - curr.amount,
-      0,
-    );
+  getTotalIncome(): number {
+    return this.currentTransactions
+      .filter((t) => t.type === 'income')
+      .reduce((sum, t) => sum + t.amount, 0);
   }
 
-  private getHeaders() {
-    const jwt = localStorage.getItem('jwt');
-    return new HttpHeaders({
-      Authorization: `Bearer ${jwt}`,
-    });
+  getTotalExpenses(): number {
+    return this.currentTransactions
+      .filter((t) => t.type === 'expense')
+      .reduce((sum, t) => sum + t.amount, 0);
+  }
+
+  getPieChartData(type: 'income' | 'expense') {
+    const filtered = this.currentTransactions.filter((t) => t.type === type);
+    const groups = filtered.reduce(
+      (acc, curr) => {
+        acc[curr.category] = (acc[curr.category] || 0) + curr.amount;
+        return acc;
+      },
+      {} as Record<string, number>,
+    );
+
+    return {
+      labels: Object.keys(groups),
+      datasets: [
+        {
+          data: Object.values(groups),
+          backgroundColor:
+            type === 'income'
+              ? ['#22c55e', '#4ade80', '#86efac', '#16a34a']
+              : ['#ef4444', '#f87171', '#fca5a5', '#dc2626'],
+          borderWidth: 1,
+        },
+      ],
+    };
   }
 }
