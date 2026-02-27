@@ -17,21 +17,30 @@ export class AccountComponent implements OnInit {
 
   isModalOpen: boolean = false;
   transactions: Transactions[] = [];
-  totalCash: number = 0;
+  totalCash$ = this.transactionService.balance$;
 
   ngOnInit(): void {
-    this.transactions = this.transactionService.getTransactions();
-    this.totalCash = this.transactionService.getTotalCash();
+    this.transactionService.getTransactions().subscribe({
+      next: (all) => (this.transactions = all),
+      error: (err) => console.error('Error fetching transactions', err),
+    });
+
+    this.transactionService.refreshBalance(localStorage.getItem(`user_id`)!);
   }
 
-  onTransactionAdded(newTransaction: any) {
-    this.transactionService.addTransaction(newTransaction);
-    this.totalCash = this.transactionService.calculateBalance();
-    this.isModalOpen = false;
+  onTransactionAdded(newTransaction: Transactions) {
+    this.transactionService.addTransaction(newTransaction).subscribe({
+      next: () => {
+        this.isModalOpen = false;
+      },
+      error: (err) => console.error('Failed to save', err),
+    });
   }
 
-  onTransactionDeleted(index: number) {
-    this.transactionService.deleteTransaction(index);
-    this.totalCash = this.transactionService.calculateBalance();
+  onTransactionDelete(id: string) {
+    this.transactionService.deleteTransaction(id).subscribe({
+      next: () => {},
+      error: (err) => console.error('Failed to delete', err),
+    });
   }
 }

@@ -11,9 +11,9 @@ import { Transactions } from 'src/app/Models/transactions.interface';
 })
 export class TransactionListComponent {
   @Input() transactions: Transactions[] = [];
-  @Output() delete = new EventEmitter<number>();
+  @Output() delete = new EventEmitter<string>();
 
-  onDeleteClick(index: number) {
+  onDeleteClick(index: string) {
     this.delete.emit(index);
   }
 }

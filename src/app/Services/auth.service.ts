@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LoginPayload, RegisterPayload } from '../Models/auth.interface';
+import { environment } from 'src/environments/environment.development';
 
 @Injectable({
   providedIn: 'root',
@@ -8,14 +9,12 @@ import { LoginPayload, RegisterPayload } from '../Models/auth.interface';
 export class AuthService {
   constructor(private http: HttpClient) {}
 
-  private readonly API_URL = `http://localhost:3000/auth`;
-
   login(credentials: LoginPayload) {
-    return this.http.post(`${this.API_URL}/login`, credentials);
+    return this.http.post(`${environment.API_URL}/auth/login`, credentials);
   }
 
   register(credentials: RegisterPayload) {
-    return this.http.post(`${this.API_URL}/register`, credentials);
+    return this.http.post(`${environment.API_URL}/auth/register`, credentials);
   }
 
   validateRegistration(credentials: RegisterPayload): string {

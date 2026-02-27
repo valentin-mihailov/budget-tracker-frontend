@@ -6,15 +6,15 @@
       Total Balance
     </p>
     <div class="flex items-baseline space-x-1">
-      <span class="text-[1.75rem] font-black text-gray-900"
-        >${{ totalCash }}</span
-      >
+      <span class="text-[1.75rem] font-black text-gray-900">{{
+        totalCash$ | async | currency
+      }}</span>
     </div>
   </div>
 
   <app-transaction-list
     [transactions]="transactions"
-    (delete)="onTransactionDeleted($event)"
+    (delete)="onTransactionDelete($event)"
   ></app-transaction-list>
 
   <button

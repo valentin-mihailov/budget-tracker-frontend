@@ -1,12 +1,13 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Transactions } from 'src/app/Models/transactions.interface';
 import { MessageService } from 'src/app/Services/message.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   standalone: true,
   selector: 'app-transaction-modal',
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './transaction-modal.component.html',
   styleUrls: ['./transaction-modal.component.css'],
 })
@@ -17,6 +18,8 @@ export class TransactionModalComponent {
 
   constructor(private messageService: MessageService) {}
 
+  description: string = '';
+  amount: string = '';
   msg$ = this.messageService.msg$;
 
   handleTransaction(
@@ -34,6 +37,7 @@ export class TransactionModalComponent {
     }
 
     const newEntry: Transactions = {
+      id: crypto.randomUUID(),
       description,
       amount: numAmount,
       type,

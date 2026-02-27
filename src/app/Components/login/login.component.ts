@@ -29,7 +29,9 @@ export class LoginComponent {
 
     this.authService.login(this.loginData).subscribe({
       next: (response: any) => {
-        console.log(response.access_token);
+        localStorage.setItem('jwt', response.access_token);
+        localStorage.setItem(`user_id`, response.user.id);
+
         this.router.navigate([`/dashboard`]);
       },
       error: (error: HttpErrorResponse) => {
