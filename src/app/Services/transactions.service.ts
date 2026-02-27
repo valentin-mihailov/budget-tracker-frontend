@@ -14,18 +14,13 @@ export class TransactionsService {
   private transactions: Transactions[] = [];
   balance$ = this.balanceSubject.asObservable();
 
-  refreshBalance(userId: string): void {
+  refreshBalance(userId: string) {
     this.http
       .get(`${environment.API_URL}/users/${userId}/balance`, {
         responseType: 'text',
+        headers: this.getHeaders(),
       })
-      .subscribe({
-        next: (val) => {
-          const numericBalance = parseFloat(val);
-          this.balanceSubject.next(numericBalance);
-        },
-        error: (err) => console.error('Balance fetch failed', err),
-      });
+      .subscribe((val) => this.balanceSubject.next(parseFloat(val)));
   }
 
   getTransactions(): Observable<Transactions[]> {

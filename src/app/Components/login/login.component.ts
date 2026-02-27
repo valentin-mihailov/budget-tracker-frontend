@@ -25,6 +25,7 @@ export class LoginComponent {
   msg$ = this.messageService.msg$;
 
   login(): void {
+    localStorage.clear();
     this.messageService.clearMessage();
 
     this.authService.login(this.loginData).subscribe({
