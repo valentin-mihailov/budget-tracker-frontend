@@ -6,12 +6,17 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './Components/login/login.component';
 import { RegisterComponent } from './Components/register/register.component';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import {
+  HttpClientModule,
+  provideHttpClient,
+  withInterceptors,
+} from '@angular/common/http';
 import { DashboardComponent } from './Components/dashboard/dashboard.component';
 import { AccountComponent } from './Components/account/account.component';
 import { BudgetComponent } from './Components/budget/budget.component';
 import { TransactionModalComponent } from './Components/transaction-modal/transaction-modal.component';
 import { TransactionListComponent } from './Components/transaction-list/transaction-list.component';
+import { authInterceptor } from './app.interceptor';
 
 @NgModule({
   declarations: [
@@ -30,7 +35,7 @@ import { TransactionListComponent } from './Components/transaction-list/transact
     TransactionModalComponent,
     TransactionListComponent,
   ],
-  providers: [],
+  providers: [provideHttpClient(withInterceptors([authInterceptor]))],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

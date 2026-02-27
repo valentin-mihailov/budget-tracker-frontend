@@ -14,41 +14,63 @@ import { FormsModule } from '@angular/forms';
 export class TransactionModalComponent {
   @Input() isOpen = false;
   @Output() close = new EventEmitter<void>();
-  @Output() add = new EventEmitter<any>();
+  @Output() add = new EventEmitter<Transactions>();
 
   constructor(private messageService: MessageService) {}
 
-  description: string = '';
   amount: string = '';
+  selectedType: 'income' | 'expense' | null = null;
+  selectedCategory: string = '';
   msg$ = this.messageService.msg$;
 
-  handleTransaction(
-    description: string,
-    amount: string,
-    type: 'income' | 'expense',
-  ) {
-    const numAmount = parseFloat(amount);
+  incomeCategories = ['Salary', 'Freelance', 'Gifts', 'Investments', 'Other'];
+  expenseCategories = [
+    'Food',
+    'Rent',
+    'Transport',
+    'Entertainment',
+    'Shopping',
+    'Other',
+  ];
 
-    if (!description.trim() || isNaN(numAmount) || numAmount <= 0) {
+  handleTransaction() {
+    const numAmount = parseFloat(this.amount);
+
+    if (
+      !this.selectedType ||
+      !this.selectedCategory ||
+      isNaN(numAmount) ||
+      numAmount <= 0
+    ) {
       this.messageService.setMessage(
-        'Please enter a valid description and amount.',
+        'Please select a type, category, and valid amount.',
       );
       return;
     }
 
     const newEntry: Transactions = {
       id: crypto.randomUUID(),
-      description,
+      category: this.selectedCategory,
       amount: numAmount,
-      type,
-      date: new Date().toLocaleDateString('en-US', {
-        month: 'short',
-        day: 'numeric',
-      }),
+      type: this.selectedType,
+      createdAt: new Date().toISOString(),
     };
 
     this.messageService.clearMessage();
+    this.resetForm();
     this.add.emit(newEntry);
     this.close.emit();
+  }
+
+  resetForm() {
+    this.amount = '';
+    this.selectedType = null;
+    this.selectedCategory = '';
+  }
+
+  get currentCategories(): string[] {
+    if (this.selectedType === 'income') return this.incomeCategories;
+    if (this.selectedType === 'expense') return this.expenseCategories;
+    return [];
   }
 }

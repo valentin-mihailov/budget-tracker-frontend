@@ -1,13 +1,18 @@
 <div
   *ngFor="let item of transactions; let i = index"
-  class="flex justify-between items-center p-4 rounded-xl border border-gray-50 shadow-sm"
-  [class.bg-green-100]="item.type === 'income'"
-  [class.bg-red-100]="item.type === 'expense'"
+  class="flex justify-between items-center p-4 mb-3 rounded-xl border border-gray-100 shadow-sm transition-all"
+  [class.bg-green-50]="item.type === 'income'"
+  [class.bg-red-50]="item.type === 'expense'"
 >
   <div class="flex items-center space-x-3">
     <div>
-      <p class="font-bold text-gray-800">{{ item.description }}</p>
-      <p class="text-[10px] text-gray-400 font-medium">{{ item.date }}</p>
+      <p class="font-bold text-gray-800 capitalize">{{ item.category }}</p>
+
+      <p
+        class="text-[10px] text-gray-500 font-semibold uppercase tracking-wider"
+      >
+        {{ item.createdAt | date: "MMM d" }}
+      </p>
     </div>
   </div>
 
@@ -15,14 +20,14 @@
     <span
       [class.text-green-600]="item.type === 'income'"
       [class.text-red-600]="item.type === 'expense'"
-      class="font-black"
+      class="font-black text-lg"
     >
-      {{ item.type === "income" ? "+" : "-" }}${{ item.amount }}
+      {{ item.type === "income" ? "+" : "-" }}${{ item.amount.toFixed(2) }}
     </span>
 
     <button
       (click)="onDeleteClick(item.id.toString())"
-      class="p-2 text-black hover:text-red-500 hover:bg-red-50 rounded-full transition-colors cursor-pointer"
+      class="p-2 text-gray-400 hover:text-red-500 hover:bg-white rounded-full transition-colors cursor-pointer"
       title="Delete Transaction"
     >
       <svg

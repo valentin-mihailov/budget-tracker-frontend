@@ -18,7 +18,6 @@ export class TransactionsService {
     this.http
       .get(`${environment.API_URL}/users/${userId}/balance`, {
         responseType: 'text',
-        headers: this.getHeaders(),
       })
       .subscribe((val) => this.balanceSubject.next(parseFloat(val)));
   }
@@ -26,12 +25,9 @@ export class TransactionsService {
   getTransactions(): Observable<Transactions[]> {
     const userId = localStorage.getItem(`user_id`);
     return this.http
-      .get<Transactions[]>(
-        `${environment.API_URL}/users/${userId}/transactions`,
-        {
-          headers: this.getHeaders(),
-        },
-      )
+      .get<
+        Transactions[]
+      >(`${environment.API_URL}/users/${userId}/transactions`)
       .pipe(tap((all) => (this.transactions = all)));
   }
 
@@ -41,9 +37,6 @@ export class TransactionsService {
       .post(
         `${environment.API_URL}/users/${userId}/transactions`,
         newTransaction,
-        {
-          headers: this.getHeaders(),
-        },
       )
       .pipe(
         tap((savedItem: any) => {
@@ -58,9 +51,6 @@ export class TransactionsService {
     return this.http
       .delete(
         `${environment.API_URL}/users/${userId}/transactions/${transactionId}`,
-        {
-          headers: this.getHeaders(),
-        },
       )
       .pipe(
         tap(() => {
