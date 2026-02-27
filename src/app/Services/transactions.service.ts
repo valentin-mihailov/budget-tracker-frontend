@@ -39,7 +39,9 @@ export class TransactionsService {
       >(`${environment.API_URL}/users/${userId}/transactions`)
       .pipe(
         tap((all) => {
-          const cleaned = all.map((t) => ({ ...t, amount: Number(t.amount) }));
+          const cleaned = all
+            .map((t) => ({ ...t, amount: Number(t.amount) }))
+            .reverse();
           this.transactionsSubject.next(cleaned);
         }),
       );
