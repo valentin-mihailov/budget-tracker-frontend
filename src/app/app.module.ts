@@ -17,6 +17,7 @@ import { BudgetComponent } from './Components/budget/budget.component';
 import { TransactionModalComponent } from './Components/transaction-modal/transaction-modal.component';
 import { TransactionListComponent } from './Components/transaction-list/transaction-list.component';
 import { authInterceptor } from './app.interceptor';
+import { DeleteModalComponent } from './Components/delete-modal/delete-modal.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import { authInterceptor } from './app.interceptor';
     AccountComponent,
     TransactionModalComponent,
     TransactionListComponent,
+    DeleteModalComponent,
   ],
   providers: [provideHttpClient(withInterceptors([authInterceptor]))],
   bootstrap: [AppComponent],

@@ -26,7 +26,7 @@
     </span>
 
     <button
-      (click)="onDeleteClick(item.id.toString())"
+      (click)="openDeleteModal(item.id)"
       class="p-2 text-gray-400 hover:text-red-500 hover:bg-white rounded-full transition-colors cursor-pointer"
       title="Delete Transaction"
     >
@@ -46,3 +46,9 @@
     </button>
   </div>
 </div>
+
+<app-delete-modal
+  [isOpen]="isDeleteModalOpen"
+  (close)="isDeleteModalOpen = false"
+  (confirmDelete)="onDeleteClick(itemToDeleteId)"
+></app-delete-modal>
